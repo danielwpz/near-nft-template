@@ -54,8 +54,8 @@ impl Contract {
             owner_id,
             NFTContractMetadata {
                 spec: NFT_METADATA_SPEC.to_string(),
-                name: "2023 Happy New Year".to_string(),
-                symbol: "HAPPY".to_string(),
+                name: "Hello NEAR".to_string(),
+                symbol: "COOL".to_string(),
                 icon: Some(DATA_IMAGE_SVG_NEAR_ICON.to_string()),
                 base_uri: None,
                 reference: None,
