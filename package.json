@@ -1,0 +1,17 @@
+{
+  "name": "near-nft-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Daniel Wang",
+  "license": "ISC",
+  "devDependencies": {
+    "near-api-js": "^2.0.4",
+    "near-units": "^0.1.9",
+    "yargs-interactive": "^3.0.1"
+  }
+}

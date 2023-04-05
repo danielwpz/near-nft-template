@@ -34,6 +34,7 @@ mod types;
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
     tokens: NonFungibleToken,
+    next_token_id: u128,
     metadata: LazyOption<NFTContractMetadata>,
     /// creator_id and creator_royalty_bp is used to implement simple payout logic
     creator_id: Option<AccountId>,
@@ -98,6 +99,7 @@ impl Contract {
                 Some(StorageKey::Enumeration),
                 Some(StorageKey::Approval),
             ),
+            next_token_id: 1,
             metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
             creator_id,
             creator_royalty_bp,
@@ -113,17 +115,16 @@ impl Contract {
     /// `self.tokens.mint` will enforce `predecessor_account_id` to equal the `owner_id` given in
     /// initialization call to `new`.
     #[payable]
-    pub fn nft_mint(
-        &mut self,
-        token_id: TokenId,
-        token_owner_id: AccountId,
-        token_metadata: TokenMetadata,
-    ) -> Token {
+    pub fn nft_mint(&mut self, token_owner_id: AccountId, token_metadata: TokenMetadata) -> Token {
         assert_eq!(
             env::predecessor_account_id(),
             self.tokens.owner_id,
             "Unauthorized"
         );
+
+        let token_id = format!("{}", self.next_token_id);
+        self.next_token_id += 1;
+
         self.tokens
             .internal_mint(token_id, token_owner_id, Some(token_metadata))
     }
@@ -205,8 +206,8 @@ mod tests {
             .predecessor_account_id(accounts(0))
             .build());
 
-        let token_id = "0".to_string();
-        let token = contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        let token = contract.nft_mint(accounts(0), sample_token_metadata());
         assert_eq!(token.token_id, token_id);
         assert_eq!(token.owner_id, accounts(0));
         assert_eq!(token.metadata.unwrap(), sample_token_metadata());
@@ -224,8 +225,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         testing_env!(context
             .storage_usage(env::storage_usage())
@@ -261,8 +262,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         // alice approves bob
         testing_env!(context
@@ -292,8 +293,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         // alice approves bob
         testing_env!(context
@@ -330,8 +331,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         // alice approves bob
         testing_env!(context

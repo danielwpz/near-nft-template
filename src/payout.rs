@@ -137,8 +137,8 @@ mod tests {
             .predecessor_account_id(owner.clone())
             .build());
 
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), alice.clone(), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(alice.clone(), sample_token_metadata());
 
         let balance = ONE_NEAR;
         let payout = contract.nft_payout(token_id, balance.into(), Some(10));
@@ -170,8 +170,8 @@ mod tests {
             .predecessor_account_id(owner.clone())
             .build());
 
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), alice.clone(), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(alice.clone(), sample_token_metadata());
 
         let balance = ONE_NEAR;
         let payout = contract.nft_payout(token_id, balance.into(), Some(10));
